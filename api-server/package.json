@@ -1,0 +1,28 @@
+{
+  "name": "library-api-server",
+  "version": "0.1.0",
+  "description": "GraphQL PostgreSQL Express CRUD example application",
+  "main": "server.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-graphql": "^0.11.0",
+    "graphql": "^15.4.0",
+    "graphql-middleware": "^4.0.2",
+    "graphql-tools": "^7.0.1",
+    "pg": "^8.5.1",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^6.3.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  },
+  "scripts": {
+    "test": "test",
+    "start": "nodemon server.js"
+  },
+  "author": "bernardolk",
+  "license": "ISC"
+}
