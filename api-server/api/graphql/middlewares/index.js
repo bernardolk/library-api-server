@@ -1,4 +1,4 @@
-const authenticateUser = require('./authentication');
+const authenticateUser = require('./authenticator');
 const validateArguments = require('./argumentValidator');
 const loggingMiddleware = require('./requestLogger');
 
