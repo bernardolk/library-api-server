@@ -1,4 +1,3 @@
-const { createMessage, updateMessage } = require('./MessageMutation');
+const { addBook, removeBook } = require('./BookMutation');
 
-
-module.exports = { createMessage, updateMessage }
+module.exports = { addBook, removeBook }

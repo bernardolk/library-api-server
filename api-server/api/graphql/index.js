@@ -1,12 +1,25 @@
 const { makeExecutableSchema } = require('graphql-tools')
 const { applyMiddleware } = require('graphql-middleware')
-const { createMessage, updateMessage } = require('./mutations')
+const { addBook } = require('./mutations')
 const typeDefs = require('./types/typeDefs')
 const loggingMiddleware = require('./middlewares/loggingMiddleware.js')
 
 
 const resolvers = {
-   Mutation: { createMessage, updateMessage }
+   MutationUnion: {
+      __resolveType: obj => {
+         if(obj.message){
+            return "MutationSuccess";
+         }
+         if(obj.invalidArguments || obj.invalidOperation){
+            return "Error";
+         }
+         else{
+            return null;
+         }
+      }
+   },
+   Mutation: { addBook }
 };
 
 
