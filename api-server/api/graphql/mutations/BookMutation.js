@@ -2,8 +2,11 @@ const db = require('../../../data/models');
 const Book = db.Book;
 const BookLoan = db.BookLoan;
 
-const sequelizeErrorHandler = require('../../services/sequelizeErrorHandler');
+const errorHandler = require('../../services/errorHandler');
 
+// ** Adds a Book to the library database
+// ** If database already contains the book, returns an invalidOperation error
+// ** On the contrary, creates associated BookLoan and Book records and returns success message
 const addBook = async (root, { bookName, bookDetails }, context, info) => {
    try {
       const book = await db.sequelize.transaction(async transaction => {
@@ -22,20 +25,16 @@ const addBook = async (root, { bookName, bookDetails }, context, info) => {
          return book;
       });
 
-      return { message: "Operation successfull: book added to library." }
+      return { message: "Operation successful: book added to library." }
    }
    catch (dbError) {
-      try {
-         const error = sequelizeErrorHandler(dbError);
-         return { ...error }
-      }
-      catch (internalError) {
-         console.log(internalError);
-         return { message: "Internal server error." }
-      }
+      return errorHandler(dbError);
    }
 }
 
+// ** Removes a Book from the library's database
+// ** If the Book is not found returns an invalidOperation error
+// ** If found, associated BookLoan and Book records are deleted and returns a success message 
 const removeBook = async (root, { bookName }, context, info) => {
    try {
       const deleted = await db.sequelize.transaction(async transaction => {
@@ -44,7 +43,7 @@ const removeBook = async (root, { bookName }, context, info) => {
                where: {
                   name: bookName
                }
-            });
+            },{transaction});
 
          if (book) {
             const loan_destroy = await
@@ -53,7 +52,7 @@ const removeBook = async (root, { bookName }, context, info) => {
                      where: {
                         book: book.id
                      }
-                  });
+                  },{transaction});
 
             const book_destroy = await
                Book
@@ -61,7 +60,7 @@ const removeBook = async (root, { bookName }, context, info) => {
                      where: {
                         name: bookName
                      }
-                  });
+                  },{transaction});
 
             return true;
          }
@@ -71,21 +70,14 @@ const removeBook = async (root, { bookName }, context, info) => {
       });
 
       if(deleted){
-         return { message: "Operation successfull: book removed from library." };
+         return { message: "Operation successful: book removed from library." };
       }
       else{
          return { invalidOperation: "Book does not exist to be removed."};
       }
    }
    catch (dbError) {
-      try {
-         const error = sequelizeErrorHandler(dbError);
-         return { ...error }
-      }
-      catch (internalError) {
-         console.log(internalError);
-         return { message: "Internal server error." }
-      }
+      return errorHandler(dbError);
    }
 }
 

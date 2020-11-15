@@ -1,5 +1,6 @@
-module.exports = (errObject) => {
 
+
+const sequelizeErrorHandler = (errObject) => {
    const null_fields = [];
    const unique_constraint_violations = [];
 
@@ -44,8 +45,22 @@ module.exports = (errObject) => {
       switch (violation) {
          case 'book_name':
             error_messages.invalidOperation = 'Book is already registered at library.';
+         case 'registration_hash':
+            error_messages.invalidOperation = 'User is already registered at library.'
       }
    }
 
    return error_messages === '' ? 'Unhandled error.' : error_messages;
+}
+
+
+module.exports = (dbError) => {
+   try {
+      const error = sequelizeErrorHandler(dbError);
+      return { ...error }
+   }
+   catch (internalError) {
+      console.log(internalError);
+      return { message: "Internal server error." }
+   }
 }

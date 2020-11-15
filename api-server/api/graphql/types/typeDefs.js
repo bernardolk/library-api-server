@@ -17,10 +17,19 @@ const typeDefs = `
      message: String!
   }
  
+  union RegistrationUnion = Credentials | Error
+
+   type Credentials {
+      libraryId: String!
+  }
+
   type Mutation {
     addBook(bookName: String, bookDetails: String): MutationUnion!
     removeBook(bookName: String): MutationUnion!
+    registerUser(firstName: String, lastName: String): RegistrationUnion!
   }
+
+ 
 
   type Query {
      _dummy: String

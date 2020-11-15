@@ -1,8 +1,8 @@
 const { makeExecutableSchema } = require('graphql-tools')
 const { applyMiddleware } = require('graphql-middleware')
-const { addBook, removeBook } = require('./mutations')
+const { addBook, removeBook, registerUser } = require('./mutations')
 const typeDefs = require('./types/typeDefs')
-const loggingMiddleware = require('./middlewares/loggingMiddleware.js')
+const loggingMiddleware = require('./middlewares/requestLogger.js')
 
 
 const resolvers = {
@@ -19,7 +19,20 @@ const resolvers = {
          }
       }
    },
-   Mutation: { addBook, removeBook }
+   RegistrationUnion: {
+      __resolveType: obj => {
+         if(obj.libraryId){
+            return "Credentials";
+         }
+         if(obj.invalidArguments || obj.invalidOperation){
+            return "Error";
+         }
+         else{
+            return null;
+         }
+      }
+   },
+   Mutation: { addBook, removeBook, registerUser }
 };
 
 

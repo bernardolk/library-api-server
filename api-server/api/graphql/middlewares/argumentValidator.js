@@ -1,0 +1,14 @@
+const validateArguments = async (resolve, root, args, context, info) => {
+   
+   // NEEDS TO, FOR EACH MUTATION, CHECK IF ALL ARGUMENTS WERE PROVIDED
+
+   // NEEDS TO CHECK IF ARGUMENTS ARE IN VALID FORMAT (NO NUMBERS OR SPECIAL CHARS FOR FIRST OR LAST NAME)
+
+   // NEEDS TO CHECK IF ARGUMENTS ARE MALICIOUS
+
+   // RESOLVE TO NEXT MIDDLEWARE
+
+};
+
+
+module.exports = validateArguments

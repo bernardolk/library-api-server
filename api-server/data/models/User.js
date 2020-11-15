@@ -2,26 +2,31 @@
 
 module.exports = (sequelize, DataTypes) => {
    const User = sequelize.define('User', {
-      user_id: {
+      id: {
          type: DataTypes.INTEGER,
          primaryKey: true,
-         autoIncrement: true
+         autoIncrement: true,
+         field: 'user_id'
       },
-      first_name: {
+      firstName: {
          type: DataTypes.STRING,
-         allowNull: false
+         allowNull: false,
+         field: 'first_name'
       },
-      registration_hash: {
+      regHash: {
          type: DataTypes.STRING,
-         allowNull: false
+         allowNull: false,
+         field: 'registration_hash'
       },
-      authorization_hash: {
+      authHash: {
          type: DataTypes.STRING,
-         allowNull: false
+         allowNull: false,
+         field: 'authentication_hash'
       },
-      library_id: {
+      libraryId: {
          type: DataTypes.STRING,
-         allowNull: false
+         allowNull: false,
+         field: 'library_id'
       }
    },{
       tableName: 'users',
