@@ -25,10 +25,13 @@ const typeDefs = `
   }
 
   type Mutation {
-    addBook(bookName: String, bookDetails: String): MutationUnion!
-    removeBook(bookName: String): MutationUnion!
+    addBook(bookName: String, bookDetails: String, 
+      lastName: String, libraryId: String): MutationUnion!
+    removeBook(bookName: String, lastName: String, libraryId: String): MutationUnion!
     registerUser(firstName: String, lastName: String): RegistrationUnion!
-    loanBook(bookName: String, requestedDueDate: String): MutationUnion!
+    loanBook(bookName: String, requestedDueDate: String,
+      lastName: String, libraryId: String): MutationUnion!
+    returnBook(bookName: String, lastName: String, libraryId: String): MutationUnion!
   }
 
  

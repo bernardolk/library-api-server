@@ -84,7 +84,7 @@ const registerUserValidator = ({ firstName, lastName }) => {
       return { errors: { nullArguments: message } };
    }
 
-   const name_match = /^[a-z]{2,}$/;
+   const name_match = /^[a-zA-Z]{2,}$/;
 
    if (!name_match.test(firstName)) {
       invalidArguments.push('firstName must have at least 2 characters and consist of only letters.');
@@ -103,7 +103,9 @@ const registerUserValidator = ({ firstName, lastName }) => {
 }
 
 
-
+// ** Validate if arguments are null
+// ** Validate if requestedDueDate is in a valid 09/09/0909 or 09-09-09 format
+// ** Validate if requestDueDate is in the future
 const loanBookValidator = ({ bookName, requestedDueDate }) => {
    let invalidArguments = [];
    let nullArguments = [];
@@ -120,19 +122,24 @@ const loanBookValidator = ({ bookName, requestedDueDate }) => {
       return { errors: { nullArguments: message } };
    }
 
+   const name_match = /^[a-zA-Z0-9\ \']{2,}$/;
+
+   if (!name_match.test(bookName)) {
+      invalidArguments.push('bookName must have at least 2 characters and consist of only numbers, letters and spaces.');
+   }
+
    const date = Date.parse(requestedDueDate);
    const date_match = /^(0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])[\/\-]\d{4}$/;
    if (isNaN(date)) {
       invalidArguments.push('provided requestedDueDate is invalid.');
    }
    else if(!date_match.test(requestedDueDate)){
-      invalidArguments.push('requestedDueDate format is invalid.');
+      invalidArguments.push('requestedDueDate date format is invalid. (MM-DD-YYYY or MM/DD/YYYY)');
    }
    else if (date < Date.now()) {
       invalidArguments.push('requestedDueDate should be a date in the future.');
    }
    
-
    if (invalidArguments.length > 0) {
       const message = invalidArguments.join(' ');
       return { errors: { invalidArguments: message } };
@@ -144,8 +151,31 @@ const loanBookValidator = ({ bookName, requestedDueDate }) => {
 
 
 
-const returnBookValidator = () => {
+const returnBookValidator = ({bookName}) => {
+   let invalidArguments = [];
+   let nullArguments = [];
 
+   if (!bookName) {
+      nullArguments.push('bookName was not provided.');
+   }
+
+   if (nullArguments.length > 0) {
+      const message = nullArguments.join(' ');
+      return { errors: { nullArguments: message } };
+   }
+
+   const name_match = /^[a-zA-Z0-9\ \']{2,}$/;
+
+   if (!name_match.test(bookName)) {
+      invalidArguments.push('bookName must have at least 2 characters and consist of only numbers, letters and spaces.');
+   }
+
+   if (invalidArguments.length > 0) {
+      const message = invalidArguments.join(' ');
+      return { errors: { invalidArguments: message } };
+   }
+
+   return { validated: true };
 }
 
 
@@ -168,6 +198,7 @@ const validateArguments = async (resolve, root, args, context, info) => {
          validation = loanBookValidator(args);
          break;
       case 'returnBook':
+         console.log('RETURNED BOOK')
          validation = returnBookValidator(args);
          break;
    }

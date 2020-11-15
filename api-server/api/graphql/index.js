@@ -1,6 +1,6 @@
 const { makeExecutableSchema } = require('graphql-tools')
 const { applyMiddleware } = require('graphql-middleware')
-const { addBook, removeBook, registerUser, loanBook } = require('./mutations')
+const { addBook, removeBook, registerUser, loanBook, returnBook } = require('./mutations')
 const typeDefs = require('./types/typeDefs')
 const middlewares = require('./middlewares')
 // const loggingMiddleware = require('./middlewares/requestLogger')
@@ -34,7 +34,7 @@ const resolvers = {
          }
       }
    },
-   Mutation: { addBook, removeBook, registerUser, loanBook }
+   Mutation: { addBook, removeBook, registerUser, loanBook, returnBook }
 };
 
 

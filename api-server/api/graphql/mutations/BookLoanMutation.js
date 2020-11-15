@@ -8,7 +8,7 @@ const errorHandler = require('../../services/errorHandler');
 // ** If book is already loaned, return invalidOperation error
 // ** If requestedDueDate is in the past or too far away, return invalidArgument error
 // ** If book is available and requestDueDate is fine, return success message 
-const loanBook = async (root, { bookName, requestedDueDate }, context, info) => {
+const loanBook = async (root, { userId, bookName, requestedDueDate }, context, info) => {
    try {
       const ONE_DAY = 1000 * 60 * 60 * 24;
       const differenceMs = Math.abs(Date.now() - Date.parse(requestedDueDate));
@@ -48,7 +48,7 @@ const loanBook = async (root, { bookName, requestedDueDate }, context, info) => 
 
                await BookLoan
                   .update({
-                     user: 3,
+                     user: userId,
                      dateLoaned: Date.now(),
                      dueDate: requestedDueDate
                   }, {
@@ -78,9 +78,67 @@ const loanBook = async (root, { bookName, requestedDueDate }, context, info) => 
 }
 
 
-// // ** Removes a Book from the library's database
-const returnBook = async (root, { bookName }, context, info) => {
-   return {message: 'not implementd'}
+// ** Returns a loaned book
+// ** If book is not registered, returns an invalidOperation error
+// ** If book is available, returns an invalidOperation error
+// ** If book is not being hold by user, returns an invalidOperation error
+// ** If date is later than dueDate, returns a penalty message along success message
+const returnBook = async (root, { userId, bookName }, context, info) => {
+   try {
+      const book = await Book
+         .findOne({
+            where: {
+               name: bookName
+            }
+         });
+
+      if (!book) {
+         return { invalidOperation: `Book '${bookName}' not found.` };
+      }
+      if (book.status == 1) {
+         return { invalidOperation: `Book '${bookName}' is available.` };
+      }
+
+      const loan = await BookLoan
+         .findOne({
+            where: {
+               book: book.id
+            }
+         });
+
+
+      if (loan.user != userId) {
+         return { invalidOperation: `Book '${bookName}' is not in your possession to be returned by you.` };
+      }
+      else {
+         let penalty = false;
+         if (Date.parse(loan.dueDate) < Date.now()) {
+            penalty = true;
+         }
+
+         // commit changes to database
+         // SERIALIZABLE transaction to ensure no concurrency problems
+         await db.sequelize.transaction(
+            { isolationLevel: db.Sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE },
+            async transaction => {
+               book.status = 1;
+               await book.save();
+               loan.user = null;
+               loan.dueDate = null;
+               loan.dateLoaned = null;
+               await loan.save();
+            });
+
+         const penalty_message = penalty ?
+            " Book return is late. You have to pay a penalty." :
+            " Book return in on time. No penalty due.";
+
+
+         return { message: "Operation successful, book has been returned." + penalty_message }
+      }
+   } catch (err) {
+      return errorHandler(err);
+   }
 }
 
 

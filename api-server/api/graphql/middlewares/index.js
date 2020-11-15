@@ -9,10 +9,17 @@ const validateArgumentsMiddleware = {
       removeBook: validateArguments,
       registerUser: validateArguments,
       loanBook: validateArguments,
-      // returnBook: validateArguments,
+      returnBook: validateArguments,
    }
 }
 
-const authenticateUserMiddleware = {};
+const authenticationMiddleware = {
+   Mutation : {
+      addBook: authenticateUser,
+      removeBook: authenticateUser,
+      loanBook: authenticateUser,
+      returnBook: authenticateUser
+   }
+}
 
-module.exports = [loggingMiddleware, validateArgumentsMiddleware]
+module.exports = [loggingMiddleware, validateArgumentsMiddleware, authenticationMiddleware]
