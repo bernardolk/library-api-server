@@ -1,6 +1,6 @@
 const { makeExecutableSchema } = require('graphql-tools')
 const { applyMiddleware } = require('graphql-middleware')
-const { addBook } = require('./mutations')
+const { addBook, removeBook } = require('./mutations')
 const typeDefs = require('./types/typeDefs')
 const loggingMiddleware = require('./middlewares/loggingMiddleware.js')
 
@@ -19,7 +19,7 @@ const resolvers = {
          }
       }
    },
-   Mutation: { addBook }
+   Mutation: { addBook, removeBook }
 };
 
 

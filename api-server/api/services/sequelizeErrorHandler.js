@@ -35,16 +35,15 @@ module.exports = (errObject) => {
    // if null arguments were provided
    if (null_fields.length > 0) {
       error_messages.invalidArguments =
-         createMessage(' Error: Arguments ', null_fields, "can't be null.");
+         createMessage('Arguments ', null_fields, "can't be null.");
    }
 
    // if unique constraint was violated
    if (unique_constraint_violations.length > 0) {
       const violation = unique_constraint_violations[0];
-
       switch (violation) {
          case 'book_name':
-            error_messages += ' Error: Book already registered at library.';
+            error_messages.invalidOperation = 'Book is already registered at library.';
       }
    }
 

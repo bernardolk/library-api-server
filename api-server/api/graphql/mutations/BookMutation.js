@@ -22,12 +22,12 @@ const addBook = async (root, { bookName, bookDetails }, context, info) => {
          return book;
       });
 
-      return { name: book.name, details: book.details }
+      return { message: "Operation successfull: book added to library." }
    }
    catch (dbError) {
       try {
-         const message = sequelizeErrorHandler(dbError);
-         return { message }
+         const error = sequelizeErrorHandler(dbError);
+         return { ...error }
       }
       catch (internalError) {
          console.log(internalError);
@@ -38,22 +38,49 @@ const addBook = async (root, { bookName, bookDetails }, context, info) => {
 
 const removeBook = async (root, { bookName }, context, info) => {
    try {
-      const book = await
-         Book
-            .destroy({
+      const deleted = await db.sequelize.transaction(async transaction => {
+         const book = await
+            Book.findOne({
                where: {
                   name: bookName
                }
             });
 
-      console.log(book);
+         if (book) {
+            const loan_destroy = await
+               BookLoan
+                  .destroy({
+                     where: {
+                        book: book.id
+                     }
+                  });
 
-      return { message: "Operation successfull: book removed from library." };
+            const book_destroy = await
+               Book
+                  .destroy({
+                     where: {
+                        name: bookName
+                     }
+                  });
+
+            return true;
+         }
+         else {
+            return false;
+         }
+      });
+
+      if(deleted){
+         return { message: "Operation successfull: book removed from library." };
+      }
+      else{
+         return { invalidOperation: "Book does not exist to be removed."};
+      }
    }
    catch (dbError) {
       try {
-         const message = sequelizeErrorHandler(dbError);
-         return { message }
+         const error = sequelizeErrorHandler(dbError);
+         return { ...error }
       }
       catch (internalError) {
          console.log(internalError);

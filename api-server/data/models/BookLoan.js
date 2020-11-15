@@ -29,7 +29,9 @@ module.exports = (sequelize, DataTypes) => {
    BookLoan.associate = (models) => {
       BookLoan.belongsTo(models.Book, {
             foreignKey: 'book',
-            as: 'bookLoan'
+            as: 'bookLoan',
+            onDelete: 'CASCADE',
+            hooks: true
          });
       };
 
