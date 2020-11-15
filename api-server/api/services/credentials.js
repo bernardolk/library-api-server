@@ -1,8 +1,9 @@
 const crypto = require('crypto');
 const salt = process.env.SALT || 'librarian-salt';
+const errorHandler = require('./errorHandler');
 
 module.exports = {
-   getCredentials : (firstName, lastName) => {
+   generateCredentials: (firstName, lastName) => {
 
       // calculate possible library id
       let library_id = '';
@@ -32,6 +33,24 @@ module.exports = {
          libraryId: library_id,
          regHash: registration_hash,
          authHash: authentication_hash
+      }
+   },
+
+   getAuthenticationHash: ({libraryId, lastName}) => {
+      try {
+         // gets authentication hash
+         let authentication_hash
+         {
+            const hash = crypto.createHmac('sha512', salt);
+            const credential = lastName + libraryId;
+            hash.update(credential);
+            authentication_hash = hash.digest('hex');
+         }
+
+         return authentication_hash;
+      }
+      catch (err) {
+         return errorHandler(err);
       }
    }
 }

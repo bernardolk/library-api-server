@@ -27,8 +27,8 @@ const addBook = async (root, { bookName, bookDetails }, context, info) => {
 
       return { message: "Operation successful: book added to library." }
    }
-   catch (dbError) {
-      return errorHandler(dbError);
+   catch (err) {
+      return errorHandler(err);
    }
 }
 
@@ -76,8 +76,8 @@ const removeBook = async (root, { bookName }, context, info) => {
          return { invalidOperation: "Book does not exist to be removed."};
       }
    }
-   catch (dbError) {
-      return errorHandler(dbError);
+   catch (err) {
+      return errorHandler(err);
    }
 }
 

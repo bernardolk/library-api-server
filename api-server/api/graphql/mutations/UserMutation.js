@@ -1,7 +1,7 @@
 const db = require('../../../data/models');
 const errorHandler = require('../../services/errorHandler');
 const User = db.User;
-const { getCredentials } = require('../../services/credentials');
+const { generateCredentials } = require('../../services/credentials');
 
 
 // ** Registers new User to the database
@@ -13,7 +13,7 @@ const registerUser = async (root, { firstName, lastName }, context, info) => {
          libraryId,
          authHash,
          regHash
-      } = getCredentials(firstName, lastName);
+      } = generateCredentials(firstName, lastName);
 
       await User
          .create({
@@ -25,8 +25,8 @@ const registerUser = async (root, { firstName, lastName }, context, info) => {
 
       return { libraryId }
    }
-   catch (dbError) {
-      return errorHandler(dbError);
+   catch (err) {
+      return errorHandler(err);
    }
 }
 

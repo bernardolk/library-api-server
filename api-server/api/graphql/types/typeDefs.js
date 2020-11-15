@@ -11,6 +11,7 @@ const typeDefs = `
   type Error {
       invalidArguments: String
       invalidOperation: String
+      nullArguments: String
   }
 
   type MutationSuccess {
@@ -27,6 +28,7 @@ const typeDefs = `
     addBook(bookName: String, bookDetails: String): MutationUnion!
     removeBook(bookName: String): MutationUnion!
     registerUser(firstName: String, lastName: String): RegistrationUnion!
+    loanBook(bookName: String, requestedDueDate: String): MutationUnion!
   }
 
  

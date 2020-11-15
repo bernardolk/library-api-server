@@ -1,10 +1,8 @@
-
-
 const sequelizeErrorHandler = (errObject) => {
    const null_fields = [];
    const unique_constraint_violations = [];
 
-   console.log(errObject);
+   console.log("\nHandling error now!");
 
    // check errors and save fields
    errObject.errors.forEach(validationErrorItem => {
@@ -45,8 +43,10 @@ const sequelizeErrorHandler = (errObject) => {
       switch (violation) {
          case 'book_name':
             error_messages.invalidOperation = 'Book is already registered at library.';
+            break;
          case 'registration_hash':
             error_messages.invalidOperation = 'User is already registered at library.'
+            break;
       }
    }
 
@@ -54,10 +54,15 @@ const sequelizeErrorHandler = (errObject) => {
 }
 
 
-module.exports = (dbError) => {
+module.exports = (error) => {
+   if(error.code && error.message){
+      console.log(error);
+      return { message: "Internal server error." }
+   }
+
    try {
-      const error = sequelizeErrorHandler(dbError);
-      return { ...error }
+      const error_messages = sequelizeErrorHandler(error);
+      return { ...error_messages }
    }
    catch (internalError) {
       console.log(internalError);

@@ -2,10 +2,11 @@
 
 module.exports = (sequelize, DataTypes) => {
    const BookLoan =  sequelize.define('BookLoan',{
-      book_loan_id: {
+      id: {
          type: DataTypes.INTEGER,
          primaryKey: true,
-         autoIncrement: true
+         autoIncrement: true,
+         field: 'book_loan_id'
       },
       book: {
          type: DataTypes.INTEGER,
@@ -14,11 +15,13 @@ module.exports = (sequelize, DataTypes) => {
       user: {
          type: DataTypes.INTEGER,
       },
-      date_loaned: {
+      dateLoaned: {
          type: DataTypes.DATE,
+         field: 'date_loaned'
       },
-      due_date: {
+      dueDate: {
          type: DataTypes.DATE,
+         field: 'due_date'
       }
    }, {
       tableName: 'book_loans',
