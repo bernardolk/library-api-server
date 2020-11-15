@@ -3,9 +3,6 @@
   "version": "0.1.0",
   "description": "GraphQL PostgreSQL Express CRUD example application",
   "main": "server.js",
-  "directories": {
-    "test": "tests"
-  },
   "dependencies": {
     "express": "^4.17.1",
     "express-graphql": "^0.11.0",
@@ -20,8 +17,9 @@
     "nodemon": "^2.0.6"
   },
   "scripts": {
-    "test": "test",
-    "start": "nodemon server.js"
+    "sdev": "nodemon server.js",
+    "sclient": "set CLIENT=true && node server.js",
+    "start" : "node server.js"
   },
   "author": "bernardolk",
   "license": "ISC"

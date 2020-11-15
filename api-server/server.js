@@ -5,9 +5,11 @@ const { schema } = require('./api/graphql');
 
 const app = express();
 
+const client = process.env.CLIENT || false;
+
 app.use('/graphql', graphqlHTTP({
   schema: schema,
-  graphiql: true,
+  graphiql: client,
 }));
 
 app.listen(process.env.PORT || 4000, () => {
