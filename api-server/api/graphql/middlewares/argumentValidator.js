@@ -90,7 +90,7 @@ const registerUserValidator = ({ firstName, lastName }) => {
       invalidArguments.push('firstName must have at least 2 characters and consist of only letters.');
    }
 
-   if (!details_match.test(lastName)) {
+   if (!name_match.test(lastName)) {
       invalidArguments.push('lastName must have at least 2 characters and consist of only letters.');
    }
 

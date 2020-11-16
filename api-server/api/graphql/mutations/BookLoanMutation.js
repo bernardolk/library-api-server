@@ -133,7 +133,7 @@ const returnBook = async (root, { userId, bookName }, context, info) => {
 
          const penalty_message = penalty ?
             " Book return is late. You have to pay a penalty." :
-            " Book return in on time. No penalty due.";
+            " Book return is on time. No penalty due.";
 
 
          return { message: "Operation successful, book has been returned." + penalty_message }
