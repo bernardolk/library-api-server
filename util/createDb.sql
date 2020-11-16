@@ -334,3 +334,12 @@ ALTER TABLE ONLY public.book_loans
 -- PostgreSQL database dump complete
 --
 
+
+INSERT INTO public.book_statuses(
+	book_status_id, status_name)
+	VALUES (1, 'available');
+
+INSERT INTO public.book_statuses(
+	book_status_id, status_name)
+	VALUES (2, 'unavailable');
+
