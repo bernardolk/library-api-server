@@ -44,7 +44,7 @@ const loanBook = async (root, { userId, bookName, requestedDueDate }, context, i
             // If available, update Book and BookLoan
             else if (book.status == 1) {
                book.status = 2;
-               await book.save();
+               await book.save({ transaction });
 
                await BookLoan
                   .update({
@@ -55,7 +55,7 @@ const loanBook = async (root, { userId, bookName, requestedDueDate }, context, i
                      where: {
                         book: book.id
                      }
-                  });
+                  }, { transaction });
             }
 
             return { error: false };
@@ -66,9 +66,11 @@ const loanBook = async (root, { userId, bookName, requestedDueDate }, context, i
          return { ...loaned.errors }
       }
 
+      const plural = days_to_due_date === 1 ? '' : 's'
+
       return {
          message:
-            `Operation successful: Book '${bookName}' should be returned in ${days_to_due_date} days.`
+            `Operation successful: Book '${bookName}' should be returned in ${days_to_due_date} day${plural}.`
       }
    }
    catch (err) {
@@ -122,11 +124,11 @@ const returnBook = async (root, { userId, bookName }, context, info) => {
             { isolationLevel: db.Sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE },
             async transaction => {
                book.status = 1;
-               await book.save();
+               await book.save({ transaction });
                loan.user = null;
                loan.dueDate = null;
                loan.dateLoaned = null;
-               await loan.save();
+               await loan.save({ transaction });
             });
 
          const penalty_message = penalty ?

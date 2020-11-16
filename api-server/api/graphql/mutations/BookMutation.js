@@ -43,16 +43,24 @@ const removeBook = async (root, { bookName }, context, info) => {
                where: {
                   name: bookName
                }
-            },{transaction});
+            }, { transaction });
 
          if (book) {
+            if (book.status == 2) {
+               return {
+                  error: true, errors: {
+                     invalidOperation: "Book cannot be removed because it is currently loaned."
+                  }
+               };
+            }
+
             const loan_destroy = await
                BookLoan
                   .destroy({
                      where: {
                         book: book.id
                      }
-                  },{transaction});
+                  }, { transaction });
 
             const book_destroy = await
                Book
@@ -60,20 +68,22 @@ const removeBook = async (root, { bookName }, context, info) => {
                      where: {
                         name: bookName
                      }
-                  },{transaction});
+                  }, { transaction });
 
-            return true;
+            return { error: false };
          }
          else {
-            return false;
+            return {
+               error: true, errors: { invalidOperation: "Book does not exist to be removed." }
+            };
          }
       });
 
-      if(deleted){
+      if (!deleted.error) {
          return { message: "Operation successful: book removed from library." };
       }
-      else{
-         return { invalidOperation: "Book does not exist to be removed."};
+      else {
+         return deleted.errors;
       }
    }
    catch (err) {
